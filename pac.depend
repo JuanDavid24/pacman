@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1375475310 source:e:\pac\main.cpp
+	<allegro.h>
+
+1375478998 source:i:\pac\main.cpp
+	<allegro.h>
+
+1485982366 source:m:\pac\main.cpp
+	<allegro.h>
+
+1490253579 source:c:\users\jota\documents\pacman\main.cpp
+	<allegro.h>
+	<cstdlib>
+
+1578011100 source:c:\users\tecno\documents\pacman\main.cpp
+	<allegro.h>
+	<cstdio>
+
