@@ -3,16 +3,15 @@
 #define MAXFILAS 21
 #define MAXCOLS 30
 
-
-/*Tareas:
-
+/*Mejoras:
 
 -clase pacman
 -2 players
 -vidas system
 -mejora IA
--mejora resolucion
+-mejora resolucion mapa
 
+Hecho:
 -you lose √
 -you win √
 -sonido √
@@ -64,11 +63,11 @@ char mapa[MAXFILAS][MAXCOLS]={
 bool hay_bolitas;
 bool game_over = false;
 
-void you_lose(){
-        textout_centre_ex(screen, retryFont, "GAME OVER",
+void derrota(bool &game_over){
+        textout_centre_ex(screen, retryFont, "PERDISTE :(",
                         SCREEN_W / 2, SCREEN_H /3,
                         makecol(255, 0, 0), makecol(0, 0, 0));
-        textout_centre_ex(screen, retryFont, "press 'R' key to retry or 'ESC' to exit",
+        textout_centre_ex(screen, retryFont, "Pulsa 'R' para reintentar o 'ESC' para salir",
                         SCREEN_W / 2, SCREEN_H *2/3,
                         makecol(255, 0, 0), makecol(0, 0, 0));
 
@@ -80,12 +79,11 @@ void you_lose(){
               }
 }
 
-void you_win(){
-        game_over=true;
-        textout_centre_ex(screen, retryFont, "YOU WIN!",
+void victoria(){
+        textout_centre_ex(screen, retryFont, "Ganaste! :D",
                         SCREEN_W / 2, SCREEN_H /3,
                         makecol(255, 0, 0), makecol(0, 0, 0));
-        textout_centre_ex(screen, retryFont, "press ESC key to exit",
+        textout_centre_ex(screen, retryFont, "Presiona 'ESC' para salir",
                         SCREEN_W / 2, SCREEN_H *2/3,
                         makecol(255, 0, 0), makecol(0, 0, 0));
 
@@ -135,7 +133,7 @@ fantasma::fantasma(int x, int y){
     fx = x*30;
     fy = y*30;
     fdir = (rand()%4)+1;
-    enemigobmp = load_bitmap("enemigo.bmp",NULL);
+    enemigobmp = load_bitmap("./res/img/enemigo.bmp",NULL);
     enemigo = create_bitmap(30,30);
 }
 
@@ -166,7 +164,7 @@ void fantasma::choque_pacman(){
         py=30*11;
         px_anterior=px; //reset de las variables x e y anteriores
         py_anterior=py;
-        you_lose();
+        derrota(game_over);
     }
 }
 
@@ -247,16 +245,16 @@ int main() {
     set_volume(100, 100);
 
 	buffer = create_bitmap(880,600);
-    roca = load_bitmap("roca.bmp",NULL);
-    pacbmp = load_bitmap("pacman.bmp",NULL);
+    roca = load_bitmap("./res/img/roca.bmp",NULL);
+    pacbmp = load_bitmap("./res/img/pacman.bmp",NULL);
     pacman = create_bitmap (33,33);
-    comida = load_bitmap ("Comida.bmp",NULL);
-    muertebmp = load_bitmap("muerte.bmp", NULL);
-    retryFont = load_font("pacFont.pcx", NULL, NULL);
-    camina_wav = load_wav("walk.wav");
-    bolita_wav = load_wav("ring.wav");
-    muerte_wav = load_wav("death.wav");
-    musica = load_midi("casino-night-zone.mid");
+    comida = load_bitmap ("./res/img/comida.bmp",NULL);
+    muertebmp = load_bitmap("./res/img/muerte.bmp", NULL);
+    retryFont = load_font("./res/font/pacFont.pcx", NULL, NULL);
+    camina_wav = load_wav("./res/sound/walk.wav");
+    bolita_wav = load_wav("./res/sound/ring.wav");
+    muerte_wav = load_wav("./res/sound/death.wav");
+    musica = load_midi("./res/sound/casino-night-zone.mid");
 
     fantasma A = fantasma(5,14);
     fantasma B = fantasma(5,3);
@@ -267,12 +265,12 @@ int main() {
 
     while(!key[KEY_ESC] && !game_over){
 
-        if (dir!=4) play_sample(camina_wav,100,127,1000,0);
+        if (dir!=4) play_sample(camina_wav,100,127,1000,0); // sonido caminar pacman
 
         dibujar_mapa();
         pantalla();
 
-        px_anterior=px;
+        px_anterior=px; // guardo posicion previa de pacman en X e Y
         py_anterior=py;
 
         mover_pacman();
@@ -286,15 +284,15 @@ int main() {
         D.mover_fantasma();
 
         pantalla();
-        rest(180);
+        rest(140);
 
         //Animacion pacman
         blit(pacbmp,pacman,4*33,0,0,0,33,33);
         draw_sprite(buffer,pacman,px,py);
         pantalla();
-        rest(140);
+        rest(100);
 
-        if (hay_bolitas==false) you_win();
+        if (hay_bolitas==false) victoria();
     }
     return(0);
 }
